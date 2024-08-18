@@ -23,7 +23,7 @@
 (def sound-frequencies [1760 1567.98 1396.91 1318.51 1174.66 1046.5 987.77 880 783.99 698.46
                         659.25 587.33 523.25 493.88 440 392 349.23 329.63 293.66 261.63])
 
-(set! (.-height canvas) size)
+(set! (.-height canvas) (/ size 2))
 (set! (.-width canvas) size)
 (set! (.. canvas -style -backgroundColor) "black") ;; igual ;; (set! (.-backgroundColor (.-style canvas)) "black")
 
@@ -67,12 +67,21 @@
 
 (defn draw-ball
   [ctx ball]
-  (let [{:keys [center radius]} ball]
-    (. ctx (beginPath))
-    (. ctx (arc (.-x center) (.-y center) radius 0 full-circ))
-    (. ctx (closePath))
-    (set! (.-strokeStyle ctx) "white")
-    (. ctx (stroke))))
+  (let [{:keys [center radius track]} ball
+        fake-y (- (* 2 (.. track -center -y)) (.-y center))]
+    (if (> fake-y (.-y center))
+      (do
+        (. ctx (beginPath))
+        (. ctx (arc (.-x center) (.-y center) radius 0 full-circ))
+        (. ctx (closePath))
+        (set! (.-strokeStyle ctx) "white")
+        (. ctx (stroke)))
+      (do
+        (. ctx (beginPath))
+        (. ctx (arc (.-x center) fake-y radius 0 full-circ))
+        (. ctx (closePath))
+        (set! (.-strokeStyle ctx) "white")
+        (. ctx (stroke))))))
 
 (defn move-ball
   [ctx {:keys [track radius speed offset center round sound-frequency]}]
