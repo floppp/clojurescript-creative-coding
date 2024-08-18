@@ -1,4 +1,4 @@
-;; Demasiado mix entre `record`, `atom` y `#js`. ebería haberlo hecho todo con `#js`.
+;; Demasiado mix entre `record`, `atom` y `#js`. Debería haberlo hecho todo con `#js`.
 ;; polyrythm
 (ns radu.how-math-can-make-your-code-better
   (:require [goog.object :as g]
@@ -42,14 +42,15 @@
       (. osc (start))
       (. osc (stop (+ duration (.-currentTime audio-ctx)))))))
 
-(defrecord Track [center radius])
+(defrecord Track [center radius period])
 ;; necesito objeto de #js para setear
-(defrecord Ball [track radius speed offset center direction sound-frequency])
+(defrecord Ball [track radius speed offset center round sound-frequency])
 
 (defn get-track-position
   [track offset]
   #js {:x (+ (.. track -center -x) (* (Math/cos offset) ^number (.-radius track)))
-       :y (- (.. track -center -y) (* (Math/sin offset) ^number (.-radius track)))})
+       :y (- (.. track -center -y) (* (Math/sin offset) ^number (.-radius track)))
+       :round (Math/floor (/ offset (:period track)))})
 
 (defn draw-track
   [ctx track]
@@ -74,21 +75,21 @@
     (. ctx (stroke))))
 
 (defn move-ball
-  [ctx {:keys [track radius speed offset center direction sound-frequency]}]
-  (let [new-offset (+ offset (* speed direction))
-        new-center (get-track-position track new-offset)
-        new-direction (if (> (.-y new-center) (.. track -center -y))
-                        (* -1 direction)
-                        direction)]
-    (when (not= direction new-direction)
+  [ctx {:keys [track radius speed offset center round sound-frequency]}]
+  (let [new-offset (+ offset speed)
+        res (get-track-position track new-offset)
+        new-round (if (not= (.-round res) round)
+                    (.-round res)
+                    round)]
+    (when (not= round new-round)
       (play-sound {:frequency sound-frequency}))
     (map->Ball
      {:track track
       :radius radius
       :speed speed
       :offset new-offset
-      :center new-center
-      :direction new-direction
+      :center res
+      :round new-round
       :sound-frequency sound-frequency})))
 
 (defn animate
@@ -99,26 +100,20 @@
   (let [new-balls (map #(move-ball ctx %) @balls)]
     (reset! balls new-balls))
   (doseq [ball @balls]
-    (draw-ball ctx ball))
-  #_(let [new-ball (move-ball ctx @ball)]
-      (reset! ball new-ball))
-  #_(draw-ball ctx @ball)
-  ;; no hace falta porque en app.cljs estamos contectando el draw de p5 con esto, por lo que él se encarga
-  ;; de llamar cada n frames.
-  #_(js/requestAnimationFrame animate))
+    (draw-ball ctx ball)))
 
 (defn setup []
   (doseq [i (range N)]
     (let [track-radius (+ track-min-radius (* i track-step))
           ball-speed (+ ball-min-speed (* i ball-speed-step))
           f (nth sound-frequencies i)
-          t (->Track #js {:x (/ size 2) :y (/ size 2)} track-radius)
+          t (->Track #js {:x (/ size 2) :y (/ size 2)} track-radius Math/PI)
           b (map->Ball {:track t
                         :radius ball-radius
                         :speed ball-speed
                         :offset 0
                         :center (get-track-position t 0)
-                        :direction 1
+                        :round 0
                         :sound-frequency f})]
       (swap! tracks conj t)
       (swap! balls conj b))))
