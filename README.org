@@ -3,7 +3,7 @@ No solo desafíos de código de /Coding Train/. Pero empecé con ellos y como so
 *** [[https://thecodingtrain.com/guides/getting-started][The Coding Train/Coding Challenges]]
 *** [[https://openprocessing.org/learn/][Tutoriales de open-processing]]
 *** Canal youtube Colorful Coding, lista Coding/p5.js
-*** https://lramrz.com/ tiene proyectos chulos que copiar
+*** https://lramrz.com/ tiene proyectos chulos para hacer
 *** [[https://idmnyu.github.io/p5.js-image][idmnyu]]
 Un par de tutoriales sencillos pero que muestran cosas básicas de p5.js muy bien explicadas.
 *** [[https://matthias-research.github.io/pages/tenMinutePhysics/index.html][Ten Minute Physics]]
@@ -30,5 +30,5 @@ Mucho prueba/error para encontrar distintos efectos.
 ****** TODO Estaría bien intentar hacer que se vea giro en un sentido y que variase su velocidad de giro (cambiando la dirección también)
 **** [[file:src/main/colorful_coding/project_2_spirograph.cljs][coding projects 02: Spirograph]], [[https://www.youtube.com/watch?v=bqRvLR3PLf0&list=PLwUlLzAS3RYow0T9ZXB0IomwB-DyBRTfm&index=2&ab_channel=ColorfulCoding][link]]
 ** Radu
-*** How Math Can Make Your Code Better, [[https://www.youtube.com/watch?v=FFyuRzq0nsg][link]].
+*** [[file:src/main/radu/how_math_can_make_your_code_better.cljs][How Math Can Make Your Code Better]], [[https://www.youtube.com/watch?v=FFyuRzq0nsg][link]].
 
