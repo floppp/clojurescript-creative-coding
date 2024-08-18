@@ -56,7 +56,7 @@
   [ctx track]
   (let [{:keys [center radius]} track]
     (. ctx (beginPath))
-    (doseq [a (range 0 full-circ 0.1)]
+    (doseq [a (range 0 full-circ 0.05)]
       (let [pos (get-track-position track a)]
         (. ctx (lineTo (.-x pos) (.-y pos)))))
     (. ctx (closePath))
