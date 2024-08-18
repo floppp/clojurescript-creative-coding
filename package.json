@@ -1,0 +1,11 @@
+{
+  "name": "coding-challenges",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "2.28.2"
+  },
+  "dependencies": {
+    "p5": "^1.9.2"
+  }
+}

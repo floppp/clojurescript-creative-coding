@@ -1,0 +1,34 @@
+* Proyectos
+No solo desafíos de código de /Coding Train/. Pero empecé con ellos y como son todos de temática similar, aprender p5.js con clojurescript, prefiero no crear varias carpetas para cosas primas hermanas.
+*** [[https://thecodingtrain.com/guides/getting-started][The Coding Train/Coding Challenges]]
+*** [[https://openprocessing.org/learn/][Tutoriales de open-processing]]
+*** Canal youtube Colorful Coding, lista Coding/p5.js
+*** https://lramrz.com/ tiene proyectos chulos que copiar
+*** [[https://idmnyu.github.io/p5.js-image][idmnyu]]
+Un par de tutoriales sencillos pero que muestran cosas básicas de p5.js muy bien explicadas.
+*** [[https://matthias-research.github.io/pages/tenMinutePhysics/index.html][Ten Minute Physics]]
+Unos 20 proyectos, basados en canvas directamente o usando ThreeJS.
+*** [[https://www.youtube.com/RaduMariescuIstodor][Canal de Radu]]
+Crack mundial. Tiene mil cosas impresionantes, sobretodo con html canvas. Aquí en principio solo implemento algún vídeo corto.
+
+
+* Implementaciones
+** Coding Train
+*** [[file:src/main/challenges/challenge_1_starlight.cljs][Coding Challenge 001]], [[https://thecodingtrain.com/challenges/1-starfield][link]]
+*** [[file:src/main/challenges/challenge_007_solar_system_2d.cljs][Coding Challenge 007]], [[https://thecodingtrain.com/challenges/7-solar-system-2d][link]]
+*** [[file:src/main/challenges/challenge_008_solar_system_3d.cljs][Coding Challenge 008]], [[https://thecodingtrain.com/challenges/8-solar-system-3d][link]]
+*** [[file:src/main/challenges/challenge_078_simple_particle_system.cljs][Coding Challenge 078: Simple Particle System]]
+*** [[file:src/main/challenges/challenge_102_2d_water_ripple.cljs][Coding Challenge 102: 2D Water Ripple]]
+*** [[file:src/main/challenges/challenge_103_fire_effect.cljs][Coding Challenge 103: Fire Effect]]
+*** [[file:src/main/challenges/challenge_180_falling_sand.cljs][Coding Challenge 180: Falling Sand]], [[https://thecodingtrain.com/challenges/180-falling-sand][link]]
+***** TODO Muy chulo, de aquí puede salir un juego como el bombardeo
+** [[https://matthias-research.github.io/pages/tenMinutePhysics/index.html][Ten Minute Physics]]
+*** [[file:src/main/ten_minute_physics/cannon_ball_2d.cljs][Cannon Ball 2d]]
+** Colorful Coding
+**** [[file:src/main/colorful_coding/project_1_sine_wave.cljs][coding projects 01: Sine wave]], [[https://www.youtube.com/playlist?list=PLwUlLzAS3RYow0T9ZXB0IomwB-DyBRTfm][link]]
+Mucho prueba/error para encontrar distintos efectos.
+****** TODO Estaría bien intentar hacer que se vea giro en un sentido y que variase su velocidad de giro (cambiando la dirección también)
+**** [[file:src/main/colorful_coding/project_2_spirograph.cljs][coding projects 02: Spirograph]], [[https://www.youtube.com/watch?v=bqRvLR3PLf0&list=PLwUlLzAS3RYow0T9ZXB0IomwB-DyBRTfm&index=2&ab_channel=ColorfulCoding][link]]
+** Radu
+*** How Math Can Make Your Code Better, [[https://www.youtube.com/watch?v=FFyuRzq0nsg][link]].
+
