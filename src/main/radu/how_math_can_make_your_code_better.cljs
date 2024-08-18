@@ -23,7 +23,7 @@
 (def sound-frequencies [1760 1567.98 1396.91 1318.51 1174.66 1046.5 987.77 880 783.99 698.46
                         659.25 587.33 523.25 493.88 440 392 349.23 329.63 293.66 261.63])
 
-(set! (.-height canvas) (/ size 2))
+(set! (.-height canvas) size)
 (set! (.-width canvas) size)
 (set! (.. canvas -style -backgroundColor) "black") ;; igual ;; (set! (.-backgroundColor (.-style canvas)) "black")
 
@@ -49,7 +49,7 @@
 (defn get-track-position
   [track offset]
   #js {:x (+ (.. track -center -x) (* (Math/cos offset) ^number (.-radius track)))
-       :y (- (.. track -center -y) (* (Math/sin offset) ^number (.-radius track)))
+       :y (- (.. track -center -y) (* (Math/abs (Math/sin offset)) ^number (.-radius track)))
        :round (Math/floor (/ offset (:period track)))})
 
 (defn draw-track
@@ -59,29 +59,18 @@
     (doseq [a (range 0 full-circ 0.1)]
       (let [pos (get-track-position track a)]
         (. ctx (lineTo (.-x pos) (.-y pos)))))
-    ;; Más sencillo pero menos flexible.
-    ;; (. ctx (arc (.-x center) (.-y center) radius 0 full-circ))
     (. ctx (closePath))
     (set! (.-strokeStyle ctx) "white")
     (. ctx (stroke))))
 
 (defn draw-ball
   [ctx ball]
-  (let [{:keys [center radius track]} ball
-        fake-y (- (* 2 (.. track -center -y)) (.-y center))]
-    (if (> fake-y (.-y center))
-      (do
-        (. ctx (beginPath))
-        (. ctx (arc (.-x center) (.-y center) radius 0 full-circ))
-        (. ctx (closePath))
-        (set! (.-strokeStyle ctx) "white")
-        (. ctx (stroke)))
-      (do
-        (. ctx (beginPath))
-        (. ctx (arc (.-x center) fake-y radius 0 full-circ))
-        (. ctx (closePath))
-        (set! (.-strokeStyle ctx) "white")
-        (. ctx (stroke))))))
+  (let [{:keys [center radius track]} ball]
+    (. ctx (beginPath))
+    (. ctx (arc (.-x center) (.-y center) radius 0 full-circ))
+    (. ctx (closePath))
+    (set! (.-strokeStyle ctx) "white")
+    (. ctx (stroke))))
 
 (defn move-ball
   [ctx {:keys [track radius speed offset center round sound-frequency]}]
