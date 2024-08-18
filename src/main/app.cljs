@@ -43,7 +43,7 @@
   (js/console.log "<<< start >>>")
   (ch/setup)
   (init)
-  (js/reDraw))
+  #_(js/reDraw))
 
 (defn stop [] ;; defn ^:dev/before-load stop []
   (js/console.log ">>> stop <<<"))
