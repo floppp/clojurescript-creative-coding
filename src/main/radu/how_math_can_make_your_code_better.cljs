@@ -17,13 +17,13 @@
 (def tracks (atom []))
 (def balls (atom []))
 (def N 20)
-(def ball-radius 10)
+(def ball-radius 6)
 (def ball-min-speed 0.01)
 (def ball-speed-step -0.0001)
 (def sound-frequencies [1760 1567.98 1396.91 1318.51 1174.66 1046.5 987.77 880 783.99 698.46
                         659.25 587.33 523.25 493.88 440 392 349.23 329.63 293.66 261.63])
 
-(set! (.-height canvas) size)
+(set! (.-height canvas) (* 2 (/ size 3)))
 (set! (.-width canvas) size)
 (set! (.. canvas -style -backgroundColor) "black") ;; igual ;; (set! (.-backgroundColor (.-style canvas)) "black")
 
@@ -42,38 +42,42 @@
       (. osc (start))
       (. osc (stop (+ duration (.-currentTime audio-ctx)))))))
 
-(defrecord Track [center radius period])
+(defrecord Track [center radius period hue])
 ;; necesito objeto de #js para setear
-(defrecord Ball [track radius speed offset center round sound-frequency])
+(defrecord Ball [track radius speed offset center round sound-frequency hue progress])
 
 (defn get-track-position
   [track offset]
   #js {:x (+ (.. track -center -x) (* (Math/cos offset) ^number (.-radius track)))
        :y (- (.. track -center -y) (* (Math/abs (Math/sin offset)) ^number (.-radius track)))
-       :round (Math/floor (/ offset (:period track)))})
+       :round (Math/floor (/ offset (:period track)))
+       :progress (/ (mod offset (:period track)) (:period track))})
 
 (defn draw-track
   [ctx track]
-  (let [{:keys [center radius]} track]
+  (let [{:keys [center radius hue]} track]
     (. ctx (beginPath))
     (doseq [a (range 0 full-circ 0.05)]
       (let [pos (get-track-position track a)]
         (. ctx (lineTo (.-x pos) (.-y pos)))))
     (. ctx (closePath))
-    (set! (.-strokeStyle ctx) "white")
+    (set! (.-strokeStyle ctx) (str "hsl(" hue ", 100%, 50%)"))
     (. ctx (stroke))))
 
 (defn draw-ball
   [ctx ball]
-  (let [{:keys [center radius track]} ball]
+  (let [{:keys [center radius track hue progress]} ball
+        lightness (- 100 (* 50 progress))]
     (. ctx (beginPath))
     (. ctx (arc (.-x center) (.-y center) radius 0 full-circ))
-    (. ctx (closePath))
+    ;; (. ctx (closePath))
     (set! (.-strokeStyle ctx) "white")
+    (set! (.-fillStyle ctx) (str "hsl(" hue ", 100%, " lightness "%)"))
+    (. ctx fill)
     (. ctx (stroke))))
 
 (defn move-ball
-  [ctx {:keys [track radius speed offset center round sound-frequency]}]
+  [ctx {:keys [track radius speed offset center round sound-frequency hue progress]}]
   (let [new-offset (+ offset speed)
         res (get-track-position track new-offset)
         new-round (if (not= (.-round res) round)
@@ -88,7 +92,9 @@
       :offset new-offset
       :center res
       :round new-round
-      :sound-frequency sound-frequency})))
+      :hue hue
+      :sound-frequency sound-frequency
+      :progress (.-progress res)})))
 
 (defn animate
   [ctx tracks balls]
@@ -104,15 +110,21 @@
   (doseq [i (range N)]
     (let [track-radius (+ track-min-radius (* i track-step))
           ball-speed (+ ball-min-speed (* i ball-speed-step))
+          hue (/ (* i 360) N)
           f (nth sound-frequencies i)
-          t (->Track #js {:x (/ size 2) :y (/ size 2)} track-radius Math/PI)
+          t (map->Track {:center #js {:x (/ size 2) :y (/ size 2)}
+                         :radius track-radius
+                         :period Math/PI
+                         :hue hue})
           b (map->Ball {:track t
                         :radius ball-radius
                         :speed ball-speed
                         :offset 0
                         :center (get-track-position t 0)
                         :round 0
-                        :sound-frequency f})]
+                        :sound-frequency f
+                        :hue hue
+                        :progress 0})]
       (swap! tracks conj t)
       (swap! balls conj b))))
 
