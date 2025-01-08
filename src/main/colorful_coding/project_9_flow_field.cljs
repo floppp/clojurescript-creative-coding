@@ -6,16 +6,17 @@
 (def ^:dynamic *max* 0)
 
 (defn setup []
-  (js/createCanvas js/windowWidth js/windowHeight)
-  (js/background 30)
-  (js/angleMode js/DEGREES)
-  (js/noiseDetail 1)
-  (let [density 50
+  (let [canvas (js/createCanvas 1000 800)
+        density 50
         space (/ js/width density)]
+    (.parent canvas "p5jsparent")
+    (js/background 30)
+    (js/angleMode js/DEGREES)
+    (js/noiseDetail 1)
     (doseq [x (range 0 js/width space)
             y (range 0 js/height space)]
-      (.push points (js/createVector (+ x (js/random -10 10)) (+ y (js/random -10 10))))))
-  (js/shuffle points true))
+      (.push points (js/createVector (+ x (js/random -10 10)) (+ y (js/random -10 10)))))
+    (js/shuffle points true)))
 
 (defn draw []
   (js/noStroke)

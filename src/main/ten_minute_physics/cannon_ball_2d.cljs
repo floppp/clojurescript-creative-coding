@@ -28,12 +28,14 @@
 (defn cy [pos]
   (- (.-height canvas) (* (.-y pos) c-scale)))
 
-(defn setup [])
+(defn setup []
+  (println "foo"))
 
 (defn simulate
   "Simulamos la nueva posición modificando la velocidad a partir de la
   aceleración (gravedad) y la posición a partir de la velocidad."
   []
+  (println "simulate")
   (set! (.-x (.-vel ball)) (+ (.-x (.-vel ball))
                               (* time-step (.-x gravity))))
   (set! (.-y (.-vel ball)) (+ (.-y (.-vel ball))
@@ -66,6 +68,7 @@
   (. ctx (fill)))
 
 (defn draw []
+  (js/console.log ball)
   (simulate)
   (draw-ball)
   #_(js/requestAnimationFrame draw))

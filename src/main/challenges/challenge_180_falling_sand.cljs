@@ -4,7 +4,7 @@
 
 ;; Definición de variables
 ;; (def state {:sizes {:w js/window.innerWidth :h js/window.innerHeight}})
-(def state {:sizes {:w 800 :h 1400}})
+(def state {:sizes {:w 1000 :h 800}})
 (def width (-> state :sizes :w))
 (def height (-> state :sizes :h))
 (def w 5) ;; tamaño de cada celda;
@@ -32,7 +32,9 @@
 
 (defn setup
   []
-  (js/createCanvas width height)
+  (let [canvas (js/createCanvas width height)]
+    (.parent canvas "p5jsparent")
+    (js/loadPixels))
   (js/colorMode js/HSB 360 255 255)
   (let [arr (make-2darray cols rows)]
     (println (count arr) (count (first arr))))

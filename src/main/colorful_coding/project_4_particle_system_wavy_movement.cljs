@@ -55,8 +55,9 @@
   (vec (remove #(= (first %) idx) (map-indexed vector v))))
 
 (defn setup []
-  (js/createCanvas w h)
-  (js/angleMode js/DEGREES)
+    (let [canvas (js/createCanvas w h)]
+      (.parent canvas "p5jsparent")
+      (js/angleMode js/DEGREES))
   (vswap! state (fn [st] (assoc st :p (make-particle)))))
 
 (defn draw []

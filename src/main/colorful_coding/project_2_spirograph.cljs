@@ -27,9 +27,10 @@
   []
   (vreset! a1Inc (js/random 0.1 5))
   (vreset! a2Inc (js/random 0.1 5))
-  (js/createCanvas 800 800)
-  (js/angleMode js/DEGREES)
-  (js/background 30))
+  (let [canvas (js/createCanvas 800 800)]
+    (.parent canvas "p5jsparent")
+    (js/angleMode js/DEGREES)
+    (js/background 30)))
 
 
 
@@ -45,7 +46,6 @@
           g (js/map (js/sin js/frameCount) -1 1 100 200)
           b (js/map (js/sin js/frameCount) -1 1 200 100)]
       (js/stroke r g b)
-
       ;; Si no compruebo el valor nil/no nil, me aparece ralla desde 0
       ;; hasta el primer punto calculado.
       (when-not (nil? @prevX)

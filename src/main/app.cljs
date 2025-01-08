@@ -1,21 +1,23 @@
 (ns app
   (:require [goog.object :as g]
-            [challenges.challenge-1-starlight]
-            [challenges.challenge-007-solar-system-2d]
-            [challenges.challenge-008-solar-system-3d]
-            [challenges.challenge-078-simple-particle-system]
-            [challenges.challenge-102-2d-water-ripple]
-            [challenges.challenge-103-fire-effect]
-            [challenges.challenge-132-fluid-simulation]
-            [challenges.challenge-180-falling-sand]
-            [colorful-coding.project-1-sine-wave]
-            [colorful-coding.project-2-spirograph]
-            [colorful-coding.project-4-particle-system-wavy-movement]
-            [colorful-coding.project-9-flow-field]
-            [lramirez.flow-field-generator]
-            [idmnyu.random-pixels]
-            [ten-minute-physics.cannon-ball-2d]
-            [radu.how-math-can-make-your-code-better :as ch]))
+            ;;[challenges.challenge-001-starlight]
+            ;; [challenges.challenge-007-solar-system-2d]
+            ;; [challenges.challenge-008-solar-system-3d]
+            ;; [challenges.challenge-078-simple-particle-system]
+            ;; [challenges.challenge-102-2d-water-ripple]
+            ;; [challenges.challenge-103-fire-effect]
+            ;;[challenges.challenge-132-fluid-simulation]
+            ;; [challenges.challenge-180-falling-sand :as ch]
+            ;; [colorful-coding.project-1-sine-wave :as ch]
+            ;; [colorful-coding.project-2-spirograph :as ch]
+            ;; [colorful-coding.project-4-particle-system-wavy-movement :as ch]
+            ;; [colorful-coding.project-9-flow-field :as ch]
+            ;; [lramirez.flow-field-generator :as ch] ;; NO ACABADO
+            ;; [idmnyu.random-pixels :as ch]
+            ;; [ten-minute-physics.cannon-ball-2d :as ch]
+            ;;[radu.how-math-can-make-your-code-better :as ch]
+            [qoback.particles-connection :as ch]
+            ))
 
 
 ;; -------------------------------------------
@@ -34,7 +36,7 @@
      (g/set "setup" ch/setup)
      (g/set "draw" ch/draw)
      ;; (g/set "mousePressed" ch/mouse-pressed)
-     ;; (g/set "mouseDragged" ch/mouse-dragged)
+     ;; (g/set "mouseDragged" ch/mouse-pressed)
      )
    (when should-resize?
      (g/set js/window "windowResized" windowResized))))

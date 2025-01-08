@@ -32,7 +32,8 @@
               255))
 
 (defn setup []
-  (js/createCanvas 600 400))
+  (let [canvas (js/createCanvas 600 400)]
+    (.parent canvas "p5jsparent")))
 
 (defn draw []
   (js/background 0)

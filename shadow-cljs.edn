@@ -1,3 +1,4 @@
+
 ;; shadow-cljs configuration
 {:source-paths
  ["src/dev"
@@ -5,17 +6,20 @@
   "src/test"]
 
  :dependencies
- [[cider/cider-nrepl "0.47.1"]]
+ [[cider/cider-nrepl "0.50.3"]]
 
  :dev-http {8080 "public"}
 
  :builds
  {:frontend {:target :browser
              :modules {:main {:init-fn app/init}}
-             :devtools {;; Aquí puedo definir algo como
+             :devtools { ;; Aquí puedo definir algo como
+                        :repl-init-ns app
+                        :repl-pprint true
                         :reload-strategy :full
                         :before-load  app/stop
                         :after-load   app/start
                         ;; pero no necesito porque pongo ya marcas en el
                         ;; código al definir las funciones.
-                        }}}}
+                        }
+             :release {:compiler-options {:optimizations :simple}}}}}

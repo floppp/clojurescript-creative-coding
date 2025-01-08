@@ -2,10 +2,10 @@
   (:require [p5]))
 
 
-(def side 200)
+(def side 500)
 (def cols side)
 (def rows side)
-(def size (* side side))
+;; (def size (* side side))
 (def dampling 0.99)
 
 ;; (def current (volatile! (.fill (js/Array side)  (.fill (js/Array side) 0))))
@@ -16,23 +16,25 @@
 (def temp (volatile! (clj->js (mapv (fn [_] (mapv (constantly 0) (range side))) (range side)))))
 
 
-(defn color->red [c]
-  (aget (.-levels (js/color c)) 0))
+;; (defn color->red [c]
+;;   (aget (.-levels (js/color c)) 0))
 
-(defn color->green [c]
-  (aget (.-levels (js/color c)) 1))
+;; (defn color->green [c]
+;;   (aget (.-levels (js/color c)) 1))
 
-(defn color->blue [c]
-  (aget (.-levels (js/color c)) 2))
+;; (defn color->blue [c]
+;;   (aget (.-levels (js/color c)) 2))
 
-(defn color->alpha [c]
-  (aget (.-levels (js/color c)) 3))
+;; (defn color->alpha [c]
+;;   (aget (.-levels (js/color c)) 3))
 
 
 (defn mouse-dragged []
   ;; (js/loadPixels)
   ;; (println js/mouseX js/mouseY)
-  (aset @previous js/mouseX js/mouseY 2550)
+  (let [x (Math/floor js/mouseX)
+        y (Math/floor js/mouseY)]
+    (aset @previous x y 2550))
   ;; (println js/mouseX js/mouseY (* 4 (+ js/mouseX (* js/mouseY cols))))
   ;; (println (aget js/pixels 10000))
   ;; (js/updatePixels)
@@ -41,8 +43,9 @@
 
 (defn setup []
   (js/pixelDensity 1)
-  (js/createCanvas cols rows)
-  (js/loadPixels)
+  (let [canvas (js/createCanvas cols rows)]
+    (.parent canvas "p5jsparent")
+    (js/loadPixels))
   ;; (aset js/pixels 1000 199)
   )
 
@@ -80,9 +83,4 @@
   (vreset! current @temp)
   )
 
-(comment
-  (for [i (range 10)
-        j (range 10)]
-    (let [f (* i j)]
-      [f i j]))
-  )
+

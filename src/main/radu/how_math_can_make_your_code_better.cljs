@@ -20,8 +20,10 @@
 (def ball-radius 6)
 (def ball-min-speed 0.01)
 (def ball-speed-step -0.0001)
-(def sound-frequencies [1760 1567.98 1396.91 1318.51 1174.66 1046.5 987.77 880 783.99 698.46
-                        659.25 587.33 523.25 493.88 440 392 349.23 329.63 293.66 261.63])
+(def sound-frequencies [1760 1567.98 1396.91 1318.51 1174.66
+                        1046.5 987.77 880 783.99 698.46
+                        659.25 587.33 523.25 493.88 440
+                        392 349.23 329.63 293.66 261.63])
 
 (set! (.-height canvas) (* 2 (/ size 3)))
 (set! (.-width canvas) size)
@@ -116,17 +118,20 @@
                          :radius track-radius
                          :period Math/PI
                          :hue hue})
+          t-pos (get-track-position t 0)
           b (map->Ball {:track t
                         :radius ball-radius
                         :speed ball-speed
                         :offset 0
-                        :center (get-track-position t 0)
+                        :center t-pos
                         :round 0
                         :sound-frequency f
                         :hue hue
                         :progress 0})]
+      (js/console.log t-pos)
       (swap! tracks conj t)
-      (swap! balls conj b))))
+      (swap! balls conj b)))
+  )
 
 (defn draw []
   (animate ctx tracks balls))

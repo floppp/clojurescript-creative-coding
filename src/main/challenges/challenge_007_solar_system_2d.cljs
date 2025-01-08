@@ -46,8 +46,9 @@
 
 ;; P5js
 (defn setup []
-  (js/createCanvas width height)
-  (js/angleMode js/DEGREES))
+  (let [canvas (js/createCanvas width height)]
+    (.parent canvas "p5jsparent")
+    (js/angleMode js/DEGREES)))
 
 (defn draw []
   (js/background 0)

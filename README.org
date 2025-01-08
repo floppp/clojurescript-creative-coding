@@ -1,3 +1,13 @@
+* General
+Para hacer /release/:
++ Comentamos en =src/main/app.cljs= todo módulo que no gastemos para tener compilaciones más pequeñas y facilitar la eliminación de código no usado en el ejemplo que queremos compilar
++ =npx shadow-cljs release frontend=
++ creamos =index.html= que cargue =public/js/main.js= si no lo tenemos ya creado
++ *OJO* porque si dependemos de /p5.js/ para la llamada continua a render en vez de usar =js/requestFrame=, tenemos que importarlo sí o sí.
++ Para probar si funciona, lanzamos servidor con ese código con =npx shadow-cljs server=.
+
+
+
 * Proyectos
 No solo desafíos de código de /Coding Train/. Pero empecé con ellos y como son todos de temática similar, aprender p5.js con clojurescript, prefiero no crear varias carpetas para cosas primas hermanas.
 *** [[https://thecodingtrain.com/guides/getting-started][The Coding Train/Coding Challenges]]
@@ -14,7 +24,7 @@ Crack mundial. Tiene mil cosas impresionantes, sobretodo con html canvas. Aquí 
 
 * Implementaciones
 ** Coding Train
-*** [[file:src/main/challenges/challenge_1_starlight.cljs][Coding Challenge 001]], [[https://thecodingtrain.com/challenges/1-starfield][link]]
+*** [[file:src/main/challenges/challenge_001_starlight.cljs][Coding Challenge 001]] [[https://thecodingtrain.com/challenges/1-starfield][link]]
 *** [[file:src/main/challenges/challenge_007_solar_system_2d.cljs][Coding Challenge 007]], [[https://thecodingtrain.com/challenges/7-solar-system-2d][link]]
 *** [[file:src/main/challenges/challenge_008_solar_system_3d.cljs][Coding Challenge 008]], [[https://thecodingtrain.com/challenges/8-solar-system-3d][link]]
 *** [[file:src/main/challenges/challenge_078_simple_particle_system.cljs][Coding Challenge 078: Simple Particle System]]
@@ -31,4 +41,3 @@ Mucho prueba/error para encontrar distintos efectos.
 **** [[file:src/main/colorful_coding/project_2_spirograph.cljs][coding projects 02: Spirograph]], [[https://www.youtube.com/watch?v=bqRvLR3PLf0&list=PLwUlLzAS3RYow0T9ZXB0IomwB-DyBRTfm&index=2&ab_channel=ColorfulCoding][link]]
 ** Radu
 *** [[file:src/main/radu/how_math_can_make_your_code_better.cljs][How Math Can Make Your Code Better]], [[https://www.youtube.com/watch?v=FFyuRzq0nsg][link]].
-

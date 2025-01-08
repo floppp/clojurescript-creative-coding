@@ -20,8 +20,9 @@
 
 (defn setup []
   (js/pixelDensity 1)
-  (js/createCanvas (* 2 w) h)
-
+  (let [canvas (js/createCanvas (* 2 w) h)]
+    (.parent canvas "p5jsparent")
+    (js/loadPixels))
   (vreset! buffer1 (js/createGraphics w h))
   (vreset! buffer2 (js/createGraphics w h))
   (vreset! cooling (js/createImage w h)))

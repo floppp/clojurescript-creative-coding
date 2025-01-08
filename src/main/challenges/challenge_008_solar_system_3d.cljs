@@ -2,7 +2,7 @@
   (:require [p5]
             [core.vector :as v])
   (:require-macros [helpers.macros :refer [twice]]
-                   [core.vector :refer [x-comp y-comp z-comp x-hat y-hat z-hat]]))
+                   [core.vector :refer [y-hat]]))
 (defn make-planet
   ([p-radious d th orbit-speed & {:keys [n-moons level] :or {n-moons 0 level 1}}]
    {:r p-radious
@@ -59,8 +59,9 @@
 
 ;; P5js
 (defn setup []
-  (js/createCanvas width height js/WEBGL)
-  (js/angleMode js/DEGREES))
+  (let [canvas (js/createCanvas width height js/WEBGL)]
+    (.parent canvas "p5jsparent")
+    (js/angleMode js/DEGREES)))
 
 (defn draw []
   (js/background 0)

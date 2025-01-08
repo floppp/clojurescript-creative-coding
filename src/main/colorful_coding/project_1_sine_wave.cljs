@@ -1,14 +1,16 @@
 (ns colorful-coding.project-1-sine-wave
   (:require [p5]))
 
-(def state {:sizes {:w 1200 :h 1200}})
+(def state {:sizes {:w 1200 :h 800}})
 (def width (-> state :sizes :w))
 (def height (-> state :sizes :h))
 
 (defn setup []
   []
-  (js/createCanvas width height js/WEBGL)
-  (js/angleMode js/DEGREES))
+  (let [canvas (js/createCanvas width height js/WEBGL)]
+    (.parent canvas "p5jsparent")
+    (js/loadPixels)
+    (js/angleMode js/DEGREES)))
 
 (defn draw []
   []
@@ -35,6 +37,3 @@
             z (* (js/sin (+ (* js/frameCount 2) (* 5 i))) 50)]
         (js/vertex x y z)))
     (js/endShape js/CLOSE)))
-
-
-
