@@ -1,8 +1,6 @@
 (ns qoback.particles-connection-canvas
   (:require [p5]
-            [core.canvas :as c]
-            [core.canvas-macros :refer-macros [circle]])
-  #_(:require [core.canvas-macros :as c]))
+            [core.canvas :as c]))
 
 (def canvas (.getElementById js/document "whiteboard"))
 (def ctx (.getContext canvas "2d"))
@@ -11,11 +9,12 @@
 (set! (.. canvas -style -backgroundColor) "black")
 
 (def mass #js [])
-(def density 100)
+(def density 10)
 (def ps #js [])
 (def limit 100)
 (def dt 0.1)
 (def frame-count (atom nil))
+(def n-particles 100)
 
 (defn make-particle
   ([idx] (make-particle idx false))
@@ -33,11 +32,8 @@
 
 (defn draw-mass []
   (when-let [x (aget mass 0)]
-    (let [fc @frame-count]
-      (c/draw-circle ctx x (aget mass 1) fc "blue"))
-    #_(.log js/console mass))
-  #_(js/fill 50 55 255)
-  #_(js/circle (aget mass 0) (aget mass 1) (aget mass 3)))
+    (let [fc (/ @frame-count 5)]
+      (c/draw-circle ctx x (aget mass 1) fc "blue"))))
 
 (defn set-mass
   [ev & args]
@@ -45,17 +41,15 @@
     (let [x-val (- (.-x ev) (.-offsetLeft canvas))
           y-val (- (.-y ev) (.-offsetTop canvas))]
       (aset mass 0 x-val)
-      (aset mass 1 y-val)
-      (aset mass 2 20))))
+      (aset mass 1 y-val))))
 
 (defn clean-mass []
   (aset mass 0 nil)
   (aset mass 1 nil)
-  (aset mass 2 nil)
   (reset! frame-count nil))
 
 (defn setup []
-  (doseq [idx (range 50)]
+  (doseq [idx (range n-particles)]
     (aset ps idx (make-particle idx)))
   (.removeEventListener canvas "mouseup" clean-mass)
   (.removeEventListener canvas "touchend" clean-mass)
@@ -80,8 +74,8 @@
       (when (< (.-x (.-pos p)) (.-radius p))
         (set! (.-x (.-pos p))  (.-radius p))
         (set! (.-x (.-vel p)) (- (.-x (.-vel p)))))
-      (when (> (.-x (.-pos p)) (- 800 (.-radius p)))
-        (set! (.-x (.-pos p)) (- 800 (.-radius p)))
+      (when (> (.-x (.-pos p)) (- 900 (.-radius p)))
+        (set! (.-x (.-pos p)) (- 900 (.-radius p)))
         (set! (.-x (.-vel p)) (- (.-x (.-vel p)))))
       (when (< (.-y (.-pos p)) (.-radius p))
         (set! (.-y (.-pos p)) (.-radius p))
@@ -102,7 +96,7 @@
   (Math/sqrt (+ (Math/pow (- (.. p -pos -x) (.. q -pos -x)) 2)
                 (Math/pow (- (.. p -pos -y) (.. q -pos -y)) 2))))
 
-(defn draw-lines []
+(defn draw-lines-naive []
   ;; naive primero.
   (doseq [^js p ps
           ^js q ps]
@@ -116,7 +110,51 @@
          (.. q -pos -y)
          {:c (str "rgba(255, 255, 255, "  (/ (- limit d) limit) ")")})))))
 
-(defn compoute-ps-accelerations []
+(defn draw-lines
+  "Avoding redundant drawns."
+  []
+  (doseq [i (range n-particles)
+          j (range (inc i) n-particles)]
+    (let [^js p (nth ps i)
+          ^js q (nth ps j)
+          d (distance p q)]
+      (when (< d limit)
+        (let [opacity (/ (- limit d) limit)
+              p-pos (.. p -pos)
+              q-pos (.. q -pos)]
+          (c/draw-line
+           ctx
+           (.-x p-pos) (.-y p-pos)
+           (.-x q-pos) (.-y q-pos)
+           {:c (str "rgba(255, 255, 255, " opacity ")")}))))))
+
+(defn draw-lines-batch-drawing
+  "Batch drawing. CANNOT BE USED BECAUSE .strokeStyle is
+  overriding each time, but nice technique if color/alpha
+  remains constant."
+  []
+  (.beginPath ctx)
+  (doseq [i (range (count ps))
+          j (range (inc i) (count ps))]
+    (let [^js p (nth ps i)
+          ^js q (nth ps j)
+          d (distance p q)]
+      (when (< d limit)
+        (let [opacity (/ (- limit d) limit)
+              p-pos (.. p -pos)
+              q-pos (.. q -pos)]
+          ;; Add the line to the batch
+          (.moveTo ctx (.-x p-pos) (.-y p-pos))
+          (.lineTo ctx (.-x q-pos) (.-y q-pos))
+          ;; Optionally set stroke style here
+          (set! (.-strokeStyle ctx)
+                (str "rgba(255, 255, 255, " opacity ")"))))))
+  ;; Render the batch
+  (.stroke ctx))
+
+
+(defn compoute-ps-accelerations
+  [& [draw-acc?]]
   (when (aget mass 0)
     (doseq [^js p ps]
       (let [px (.. p -pos -x)
@@ -126,14 +164,21 @@
             deltax (- mx px)
             deltay (- my py)
             r (+ (* deltax deltax) (* deltay deltay))
-            mass-m (* density (aget mass 2))
-            x-acc (* mass-m  (/ (- mx px) r))
-            y-acc (* mass-m  (/ (- my py) r))]
-        (set! (.-acc p) #js {:x x-acc :y y-acc})
-        #_(c/draw-line ctx px
-                     py
-                     mx
-                     my)))))
+            mass-m (* density @frame-count)
+            acc-x (* mass-m  (/ (- mx px) r))
+            acc-y (* mass-m  (/ (- my py) r))]
+        (set! (.-acc p)
+              #js {:x acc-x :y acc-y})
+        (when draw-acc?
+          (let [acc-m (/ (Math/sqrt (Math/pow acc-x 2) (Math/pow acc-y 2)) 20)]
+            (c/draw-line ctx px
+                         py
+                         mx
+                         my
+                         {:c (str "rgba(255, 255, 255, " acc-m ")")
+                          ;; :w (if (> acc-m 10) 20 1)
+                          }
+                         )))))))
 
 (defn mouse-released [] (clean-mass))
 
@@ -149,5 +194,5 @@
   (update-ps)
   #_(js/requestAnimationFrame draw)
   (let [fc @frame-count]
-    (when (and (not (nil? fc)) (< fc 40))
+    (when (and (not (nil? fc)) (< fc 200))
       (swap! frame-count #(inc %)))))
