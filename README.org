@@ -20,6 +20,8 @@ Un par de tutoriales sencillos pero que muestran cosas básicas de p5.js muy bie
 Unos 20 proyectos, basados en canvas directamente o usando ThreeJS.
 *** [[https://www.youtube.com/RaduMariescuIstodor][Canal de Radu]]
 Crack mundial. Tiene mil cosas impresionantes, sobretodo con html canvas. Aquí en principio solo implemento algún vídeo corto.
+*** Cosas mías
+Inspiradas en animaciones o imágenes, sin código de referencia.
 
 
 * Implementaciones
