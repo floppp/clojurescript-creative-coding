@@ -18,6 +18,7 @@
             #_[radu.how-math-can-make-your-code-better :as ch]
             ;; [qoback.particles-connection :as ch]
             [qoback.particles-connection-canvas :as ch]
+            ;; [qoback.particles-connection-canvas-space-splitting :as ch]
             ))
 
 
