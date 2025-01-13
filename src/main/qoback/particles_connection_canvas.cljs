@@ -14,20 +14,20 @@
 (def limit 100)
 (def dt 0.1)
 (def frame-count (atom nil))
-(def n-particles 100)
+(def n-particles 50)
 
 (defn make-particle
-  ([idx] (make-particle idx false))
-  ([idx empty-vel?]
+  ([idx] (make-particle idx true))
+  ([idx moving-particle?]
    #js {:id idx
         :diameter 8
         :radius 4
         :pos #js {:x (js/random 50 850)
                   :y (js/random 50 550)}
-        :vel (if empty-vel?
-               #js {:x 0 :y 0}
+        :vel (if moving-particle?
                #js {:x (js/random -10 10)
-                    :y (js/random -10 10)})
+                    :y (js/random -10 10)}
+               #js {:x 0 :y 0})
         :acc #js {:x 0 :y 0}}))
 
 (defn draw-mass []
@@ -50,7 +50,7 @@
 
 (defn setup []
   (doseq [idx (range n-particles)]
-    (aset ps idx (make-particle idx)))
+    (aset ps idx (make-particle idx true)))
   (.removeEventListener canvas "mouseup" clean-mass)
   (.removeEventListener canvas "touchend" clean-mass)
   (.removeEventListener canvas "mousedown" set-mass) ;; click no sirve porque se dispara después que `touchend`.
@@ -152,8 +152,7 @@
   ;; Render the batch
   (.stroke ctx))
 
-
-(defn compoute-ps-accelerations
+(defn compute-ps-accelerations
   [& [draw-acc?]]
   (when (aget mass 0)
     (doseq [^js p ps]
@@ -177,18 +176,51 @@
                          my
                          {:c (str "rgba(255, 255, 255, " acc-m ")")
                           ;; :w (if (> acc-m 10) 20 1)
-                          }
-                         )))))))
+                          })))))))
+
+(def squares #js [])
 
 (defn mouse-released [] (clean-mass))
+(def n-squares (atom 0))
+
+(defn split-space []
+  (set! (.-length squares) 0)
+  (reset! n-squares 0)
+  (let [w (/ limit 2)]
+    (doseq [idx (range (count ps))]
+      (let [p (aget ps idx)
+            n-rows (/ 600 w)
+            n-cols (/ 900 w)
+            row (Math/floor (/ (.. p -pos -y) w))
+            col (Math/floor (/ (.. p -pos -x) w))
+            square-idx (+ (* row n-cols) col)
+            current (aget squares square-idx)]
+        (if (nil? current)
+          (aset squares square-idx #js [idx])
+          (.push (aget squares square-idx) idx))))
+    (doseq [yinit (range 0 600 w)
+            xinit (range 0 900 w)]
+      (swap! n-squares #(inc %))
+      (let [x-idx (/ xinit w)
+            y-idx (/ yinit w)
+            square-idx (+ x-idx (* y-idx (/ 900 w)))]
+        ;; (.log js/console square-idx)
+        (.beginPath ctx)
+        (.rect ctx xinit yinit w w)
+        ;; (set! (.-strokeStyle ctx) "white")
+        (if (nil? (aget squares square-idx))
+          (set! (.-strokeStyle ctx) "gray")
+          (set! (.-strokeStyle ctx) "red"))
+        (.stroke ctx)))))
 
 (defn draw []
   (. ctx (clearRect 0 0 900 600))
+  (split-space)
   (draw-lines)
   (doseq [^js p ps]
     (c/draw-circle ctx (.. p -pos -x) (.. p -pos -y) (.-radius p) "blue"))
   ;; tiene que estar antes de actualizar
-  (compoute-ps-accelerations)
+  (compute-ps-accelerations)
   (draw-mass)
   (update-vs)
   (update-ps)
