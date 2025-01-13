@@ -13,10 +13,10 @@
 (def mass #js [])
 (def density 10)
 (def ps #js [])
-(def limit 100)
+(def limit 25)
 (def dt 0.1)
 (def frame-count (atom nil))
-(def n-particles 2000)
+(def n-particles 1500)
 
 (defn make-particle
   ([idx] (make-particle idx true))
@@ -183,35 +183,36 @@
   "Avoding redundant drawns."
   []
   (doseq [^js p ps]
-    (let [ns (remove nil? (get-neighbors-idx p))]
-      (doseq [^js n ns]
-        (let [q (aget ps (first n))
-              d (distance p q)]
-          (when (< d limit)
-            (let [opacity (/ (- limit d) limit)
-                  p-pos (.. p -pos)
-                  q-pos (.. q -pos)]
-              (c/draw-line
-               ctx
-               (.-x p-pos) (.-y p-pos)
-               (.-x q-pos) (.-y q-pos)
-               {:c (str "rgba(255, 255, 255, " opacity ")")})))))))
+    (let [nss (remove nil? (get-neighbors-idx p))]
+      (doseq [^js ns nss] ;; devuele array con todos los vecinos en esa zona
+        (doseq [^js n ns]
+          (let [q (aget ps n)
+                d (distance p q)]
+            (when (< d limit)
+              (let [opacity (/ (- limit d) limit)
+                    p-pos (.. p -pos)
+                    q-pos (.. q -pos)]
+                (c/draw-line
+                 ctx
+                 (.-x p-pos) (.-y p-pos)
+                 (.-x q-pos) (.-y q-pos)
+                 {:c (str "rgba(255, 255, 255, " opacity ")")}))))))))
 
   #_(doseq [i (range n-particles)
-          j (range (inc i) n-particles)]
-    (let [^js p (nth ps i)
-          ^js q (nth ps j)
-          d (distance p q)]
+            j (range (inc i) n-particles)]
+      (let [^js p (nth ps i)
+            ^js q (nth ps j)
+            d (distance p q)]
       ;; (get-neighbors p)
-      (when (< d limit)
-        (let [opacity (/ (- limit d) limit)
-              p-pos (.. p -pos)
-              q-pos (.. q -pos)]
-          (c/draw-line
-           ctx
-           (.-x p-pos) (.-y p-pos)
-           (.-x q-pos) (.-y q-pos)
-           {:c (str "rgba(255, 255, 255, " opacity ")")}))))))
+        (when (< d limit)
+          (let [opacity (/ (- limit d) limit)
+                p-pos (.. p -pos)
+                q-pos (.. q -pos)]
+            (c/draw-line
+             ctx
+             (.-x p-pos) (.-y p-pos)
+             (.-x q-pos) (.-y q-pos)
+             {:c (str "rgba(255, 255, 255, " opacity ")")}))))))
 
 (defn draw-lines-batch-drawing
   "Batch drawing. CANNOT BE USED BECAUSE .strokeStyle is
@@ -266,7 +267,7 @@
 
 (defn draw []
   (. ctx (clearRect 0 0 width height))
-  (split-space)
+  (split-space false)
   ;; (draw-lines)
   (draw-neighbors-lines)
   (doseq [^js p ps]
