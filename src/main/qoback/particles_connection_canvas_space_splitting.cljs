@@ -13,7 +13,7 @@
 (def mass #js [])
 (def density 10)
 (def ps #js [])
-(def limit 100)
+(def limit 80)
 (def dt 0.1)
 (def frame-count (atom nil))
 (def n-particles 200)

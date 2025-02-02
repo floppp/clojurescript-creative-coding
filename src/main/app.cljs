@@ -13,12 +13,16 @@
             #_[colorful-coding.project-4-particle-system-wavy-movement :as ch]
             #_[colorful-coding.project-9-flow-field :as ch]
             #_[lramirez.flow-field-generator :as ch] ;; NO ACABADO
+            #_[lramirez.circular-motion :as ch] ;; NO ACABADO
             #_[idmnyu.random-pixels :as ch]
             #_[ten-minute-physics.cannon-ball-2d :as ch]
+            #_[ten-minute-physics.fluid-simulation :as ch]
             #_[radu.how-math-can-make-your-code-better :as ch]
-            ;; [qoback.particles-connection :as ch]
-            [qoback.particles-connection-canvas :as ch]
-            ;; [qoback.particles-connection-canvas-space-splitting :as ch]
+            #_[qoback.particles-connection :as ch]
+            #_[qoback.particles-connection-canvas :as ch]
+            #_[qoback.particles-connection-canvas-space-splitting :as ch]
+            #_[generative-design.colors :as ch]
+            [generative-design.random-traces :as ch]
             ))
 
 
@@ -35,6 +39,7 @@
   ([should-resize?]
    ;; Definimos qué funciones se llamarán por p5.js
    (doto js/window
+     ;; (g/set "preload" ch/preload)
      (g/set "setup" ch/setup)
      (g/set "draw" ch/draw)
      ;; (g/set "mousePressed" ch/mouse-pressed)

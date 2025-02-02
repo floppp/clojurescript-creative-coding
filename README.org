@@ -22,6 +22,8 @@ Unos 20 proyectos, basados en canvas directamente o usando ThreeJS.
 Crack mundial. Tiene mil cosas impresionantes, sobretodo con html canvas. Aquí en principio solo implemento algún vídeo corto.
 *** Cosas mías
 Inspiradas en animaciones o imágenes, sin código de referencia.
+*** [[http://www.generative-gestaltung.de/2/][Generative Design]]
+Libro sobre el tema, bastante sencillo, lo más interesante es la web y los ejemplos que tiene en github.
 
 
 * Implementaciones
