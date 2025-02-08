@@ -16,15 +16,15 @@
             #_[lramirez.circular-motion :as ch] ;; NO ACABADO
             #_[idmnyu.random-pixels :as ch]
             #_[ten-minute-physics.cannon-ball-2d :as ch]
-            #_[ten-minute-physics.fluid-simulation :as ch]
+            #_[ten-minute-physics.fluid-simulation :as ch]; :: NO ACABADO
             #_[radu.how-math-can-make-your-code-better :as ch]
-            #_[qoback.particles-connection :as ch]
-            #_[qoback.particles-connection-canvas :as ch]
-            #_[qoback.particles-connection-canvas-space-splitting :as ch]
+            ;; [qoback.particles-connection :as ch]
+            ;; [qoback.particles-connection-canvas :as ch]
+            ;; [qoback.particles-connection-canvas-space-splitting :as ch]
             #_[generative-design.colors :as ch]
-            [generative-design.random-traces :as ch]
-            ))
-
+            #_[generative-design.crazy-circles :as ch]
+            #_[generative-design.random-traces :as ch]
+            [generative-design.spring :as ch]))
 
 ;; -------------------------------------------
 ;;  Artefactos necesarios para funcionamiento
@@ -42,9 +42,9 @@
      ;; (g/set "preload" ch/preload)
      (g/set "setup" ch/setup)
      (g/set "draw" ch/draw)
-     ;; (g/set "mousePressed" ch/mouse-pressed)
-     ;; (g/set "mouseDragged" ch/mouse-dragged)
-     ;; (g/set "mouseReleased" ch/mouse-released)
+     (g/set "mouseClicked" ch/mouse-clicked)
+     (g/set "mouseDragged" ch/mouse-dragged)
+     (g/set "mouseReleased" ch/mouse-released)
      )
    (when should-resize?
      (g/set js/window "windowResized" windowResized))))

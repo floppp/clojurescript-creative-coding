@@ -13,10 +13,10 @@
 (def mass #js [])
 (def density 10)
 (def ps #js [])
-(def limit 80)
+(def limit 40)
 (def dt 0.1)
 (def frame-count (atom nil))
-(def n-particles 200)
+(def n-particles 100)
 
 (defn make-particle
   ([idx] (make-particle idx true))
@@ -208,7 +208,7 @@
 
 (defn draw []
   (. ctx (clearRect 0 0 width height))
-  (split-space false)
+  (split-space true)
   (draw-neighbors-lines)
   (doseq [^js p ps]
     (c/draw-circle ctx (.. p -pos -x) (.. p -pos -y) (.-radius p) "blue"))
