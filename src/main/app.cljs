@@ -21,10 +21,14 @@
             ;; [qoback.particles-connection :as ch]
             ;; [qoback.particles-connection-canvas :as ch]
             ;; [qoback.particles-connection-canvas-space-splitting :as ch]
-            #_[generative-design.colors :as ch]
-            #_[generative-design.crazy-circles :as ch]
-            #_[generative-design.random-traces :as ch]
-            [generative-design.spring :as ch]))
+            ;; [generative-design.colors :as ch]
+            ;; [generative-design.crazy-circles :as ch]
+            ;; [generative-design.random-traces :as ch]
+            ;; [generative-design.spring :as ch]
+            ;; [generative-design.graph-springs :as ch]
+            ;; [fluids.viscoelastic-0 :as ch]
+            [fluids.viscoelastic-1 :as ch]
+            ))
 
 ;; -------------------------------------------
 ;;  Artefactos necesarios para funcionamiento
@@ -40,18 +44,21 @@
    ;; Definimos qué funciones se llamarán por p5.js
    (doto js/window
      ;; (g/set "preload" ch/preload)
-     (g/set "setup" ch/setup)
-     (g/set "draw" ch/draw)
-     (g/set "mouseClicked" ch/mouse-clicked)
-     (g/set "mouseDragged" ch/mouse-dragged)
-     (g/set "mouseReleased" ch/mouse-released)
+     ;; (g/set "setup" ch/setup)
+     ;; (g/set "draw" ch/draw)
+     ;; (g/set "mouseClicked" ch/mouse-clicked)
+     ;; (g/set "mouseDragged" ch/mouse-dragged)
+     ;; (g/set "mouseReleased" ch/mouse-released)
+     ;; (g/set "mousePressed" ch/mouse-pressed)
      )
+   (ch/setup)
+   (ch/draw)
    (when should-resize?
      (g/set js/window "windowResized" windowResized))))
 
 (defn start [] ;; defn ^:dev/after-load start []
   (js/console.log "<<< start >>>")
-  (ch/setup)
+  ;; (ch/setup)
   (init)
   #_(js/reDraw))
 
