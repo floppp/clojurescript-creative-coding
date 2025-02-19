@@ -1,15 +1,6 @@
 ;; First Step of
 ;; https://github.com/kotsoft/particle_based_viscoelastic_fluid?tab=readme-ov-file
-(ns fluids.viscoelastic-2
-  #_(:require [p5]))
-
-(defn make-material [name rest-density stiffness near-stiffness kernel-radius]
-  {:name name
-   :rest-density rest-density
-   :stiffness stiffness
-   :near-stiffness near-stiffness
-   :kernel-radius kernel-radius
-   :max-pressure 1})
+(ns fluids.viscoelastic-2)
 
 (def canvas (.getElementById js/document "whiteboard"))
 (def ctx (.getContext canvas "2d"))
@@ -21,7 +12,8 @@
 (set! (.-width canvas) width)
 (def dt 1)
 (def particles #js [])
-(def n-particles 700)
+(def n-particles 500)
+(def num-hash-buckets 1000)
 (def boundary-mul 0.5)
 (def boundary-minx 5)
 (def boundary-maxx (- width 5))
@@ -38,10 +30,10 @@
 (def neighbor-unity #js [])
 (def neighbor-closeness #js [])
 (def visited-buckets #js [])
-(def num-hash-buckets 2000)
 (def particle-list-heads #js [])
 (def particle-list-next-idx [])
 (def bucket-size-inv (/ 1 kernel-radius))
+
 
 (defn make-particle [x y  vx vy]
   #js{:x x :y y :prev-x x :prev-y y :vx vx :vy vy})
@@ -71,12 +63,14 @@
   (set! (.-length visited-buckets) 0)
   (doseq [i (range n-particles)]
     (let [p0 (aget particles i)
+          p0-x (.-x p0)
+          p0-y (.-y p0)
           bucket-x (js/Math.floor (* (.-x p0) kernel-radius-inv))
           bucket-y (js/Math.floor (* (.-y p0) kernel-radius-inv))
-          density (atom 0)
-          near-density (atom 0)
-          num-neihgbors (atom 0)
-          num-visited-buckets (atom 0)]
+          density (volatile! 0)
+          near-density (volatile! 0)
+          num-neihgbors (volatile! 0)
+          num-visited-buckets (volatile! 0)]
       (doseq [bucket-dx (range -1 2)
               bucket-dy (range -1 2)]
         (let [bucket-idx (get-hash-bucket-idx (js/Math.floor (+ bucket-x bucket-dx))
@@ -84,17 +78,17 @@
               found (some #(= % bucket-idx) visited-buckets)]
           (when (not found)
             (aset visited-buckets @num-visited-buckets bucket-idx)
-            (swap! num-visited-buckets (fn [old] (inc old)))
+            (vswap! num-visited-buckets (fn [old] (inc old)))
             (loop [neighbor-idx (aget particle-list-heads bucket-idx)]
               (if (= -1 neighbor-idx)
                 ()
                 (if (= i neighbor-idx)
                   (recur (aget particle-list-next-idx neighbor-idx))
                   (let [p1 (aget particles neighbor-idx)
-                        diffx (- (.-x p1) (.-x p0))]
+                        diffx (- (.-x p1) p0-x)]
                     (if (or (> diffx kernel-radius) (< diffx (- kernel-radius)))
                       (recur (aget particle-list-next-idx neighbor-idx))
-                      (let [diffy (- (.-y p1) (.-y p0))]
+                      (let [diffy (- (.-y p1) p0-y)]
                         (or (> diffy kernel-radius) (< diffy (- kernel-radius)))
                         (let [rSq (+ (* diffx diffx) (* diffy diffy))]
                           (when (< rSq kernel-radius-square)
@@ -102,22 +96,22 @@
                                   q (* r kernel-radius-inv)
                                   closeness (- 1 q)
                                   closeness-sq (* closeness closeness)]
-                              (swap! density (fn [old] (+ old closeness-sq)))
-                              (swap! near-density (fn [old] (+ old (* closeness closeness-sq))))
+                              (vswap! density (fn [old] (+ old closeness-sq)))
+                              (vswap! near-density (fn [old] (+ old (* closeness closeness-sq))))
                               (aset neighbor-indexes @num-neihgbors neighbor-idx)
                               (aset neighbor-unitx @num-neihgbors (/ diffx r))
                               (aset neighbor-unity @num-neihgbors (/ diffy r))
                               (aset neighbor-closeness @num-neihgbors closeness)
-                              (swap! num-neihgbors (fn [old] (inc old)))))
+                              (vswap! num-neihgbors (fn [old] (inc old)))))
                           (recur (aget particle-list-next-idx neighbor-idx))))))))))))
-      (let [pressure (atom (* stiffness (- @density rest-density)))
-            near-pressure (atom (* near-stiffness @near-density))
-            dispx (atom 0)
-            dispy (atom 0)]
+      (let [pressure (volatile! (* stiffness (- @density rest-density)))
+            near-pressure (volatile! (* near-stiffness @near-density))
+            dispx (volatile! 0)
+            dispy (volatile! 0)]
         (when (> @pressure 1)
-          (reset! pressure 1))
+          (vreset! pressure 1))
         (when (> @near-pressure 1)
-          (reset! near-pressure 1))
+          (vreset! near-pressure 1))
         (doseq [j (range @num-neihgbors)]
           (let [p1 (aget particles (aget neighbor-indexes j))
                 closeness (aget neighbor-closeness j)
@@ -127,10 +121,10 @@
                 DY (* D (aget neighbor-unity j))]
             (set! (.-x p1) (+ (.-x p1) DX))
             (set! (.-y p1) (+ (.-y p1) DY))
-            (swap! dispx (fn [o] (- o DX)))
-            (swap! dispy (fn [o] (- o DY)))))
-        (set! (.-x p0) (+ (.-x p0) @dispx))
-        (set! (.-y p0) (+ (.-y p0) @dispy))))))
+            (vswap! dispx (fn [o] (- o DX)))
+            (vswap! dispy (fn [o] (- o DY)))))
+        (set! (.-x p0) (+ p0-x @dispx))
+        (set! (.-y p0) (+ p0-y @dispy))))))
 
 (defn resolve-collisions!
   []
@@ -162,8 +156,7 @@
           bucket-y (js/Math.floor (* (.-y p) bucket-size-inv))
           bucket-idx (get-hash-bucket-idx bucket-x bucket-y)]
       (aset particle-list-next-idx i (aget particle-list-heads bucket-idx))
-      (aset particle-list-heads bucket-idx i)))
-  )
+      (aset particle-list-heads bucket-idx i))))
 
 (defn update!
   []
@@ -185,6 +178,7 @@
 
 (defn setup
   []
+  (set! (.-length particles) 0)
   (init-particles! n-particles))
 
 (defn draw
