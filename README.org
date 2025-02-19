@@ -1,29 +1,29 @@
 * General
-Para hacer /release/:
-+ Comentamos en =src/main/app.cljs= todo módulo que no gastemos para tener compilaciones más pequeñas y facilitar la eliminación de código no usado en el ejemplo que queremos compilar
+For /release/:
++ Comment in =src/main/app.cljs= every module not used so we can have smaller compilations. If no p5 required, even smaller. But we must call =requireFrame= directly.
 + =npx shadow-cljs release frontend=
-+ creamos =index.html= que cargue =public/js/main.js= si no lo tenemos ya creado
-+ *OJO* porque si dependemos de /p5.js/ para la llamada continua a render en vez de usar =js/requestFrame=, tenemos que importarlo sí o sí.
-+ Para probar si funciona, lanzamos servidor con ese código con =npx shadow-cljs server=.
+  + Creation of =index.html= that loads =public/js/main.js=, if it is not created yet.
++ *WARN* because if we depend on /p5.js/ for continuous call to render instead of using, we must import =js/requestFrame=.
++ To test, we launch the server with this code using =npx shadow-cljs server=.
 
 
 
-* Proyectos
-No solo desafíos de código de /Coding Train/. Pero empecé con ellos y como son todos de temática similar, aprender p5.js con clojurescript, prefiero no crear varias carpetas para cosas primas hermanas.
+* Projects
+Not only coding challenges from /Coding Train/ altough the names suggests that. But the repo started with this idea, this is the name.
 *** [[https://thecodingtrain.com/guides/getting-started][The Coding Train/Coding Challenges]]
-*** [[https://openprocessing.org/learn/][Tutoriales de open-processing]]
-*** Canal youtube Colorful Coding, lista Coding/p5.js
-*** https://lramrz.com/ tiene proyectos chulos para hacer
+*** [[https://openprocessing.org/learn/][Tutos de open-processing]]
+*** Youtube channel Colorful Coding, Coding/p5.js list.
+*** https://lramrz.com/ nice projects to replicate.
 *** [[https://idmnyu.github.io/p5.js-image][idmnyu]]
-Un par de tutoriales sencillos pero que muestran cosas básicas de p5.js muy bien explicadas.
+Simple tutoriales about basic p5.js stuff, but great explanations.
 *** [[https://matthias-research.github.io/pages/tenMinutePhysics/index.html][Ten Minute Physics]]
-Unos 20 proyectos, basados en canvas directamente o usando ThreeJS.
-*** [[https://www.youtube.com/RaduMariescuIstodor][Canal de Radu]]
-Crack mundial. Tiene mil cosas impresionantes, sobretodo con html canvas. Aquí en principio solo implemento algún vídeo corto.
-*** Cosas mías
-Inspiradas en animaciones o imágenes, sin código de referencia.
+Around 20 projects, canvas based, or using ThreeJS.
+*** [[https://www.youtube.com/RaduMariescuIstodor][Radu Channel]]
+Crack. Hundred of awesome materials, using canvas. I only implement very short of his tutos.
+*** Own stuff
+Inspired by images or animations, without reference js code.
 *** [[http://www.generative-gestaltung.de/2/][Generative Design]]
-Libro sobre el tema, bastante sencillo, lo más interesante es la web y los ejemplos que tiene en github.
+Quite simmple book, the most interesting is the code on its related web.
 
 
 * Implementaciones
