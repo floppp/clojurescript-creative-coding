@@ -27,7 +27,8 @@
             ;; [generative-design.spring :as ch]
             ;; [generative-design.graph-springs :as ch]
             ;; [fluids.viscoelastic-0 :as ch]
-            [fluids.viscoelastic-1 :as ch]
+            ;; [fluids.viscoelastic-1 :as ch]
+            [fluids.viscoelastic-2 :as ch]
             ))
 
 ;; -------------------------------------------
