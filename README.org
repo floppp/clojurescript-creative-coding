@@ -1,11 +1,11 @@
 * General
 For /release/:
-+ Comment in =src/main/app.cljs= every module not used so we can have smaller compilations. If no p5 required, even smaller. But we must call =requireFrame= directly.
-+ =npx shadow-cljs release frontend=
+- Comment in =src/main/app.cljs= every module not used so we can have smaller compilations. If no p5 required, even smaller. But we must call =requireFrame= directly.
+- =npx shadow-cljs release frontend=
   + Creation of =index.html= that loads =public/js/main.js=, if it is not created yet.
-+ *WARN* because if we depend on /p5.js/ for continuous call to render instead of using, we must import =js/requestFrame=.
-+ To test, we launch the server with this code using =npx shadow-cljs server=.
-
+- *WARN* because if we depend on /p5.js/ for continuous call to render instead of using, we must import =js/requestFrame=.
+- To test, we launch the server with this code using =npx shadow-cljs server=.
+- The images must be stored in _assets/img/image.png_.
 
 
 * Projects
